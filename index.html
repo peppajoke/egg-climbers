@@ -1007,7 +1007,7 @@ function updateSelect() {
   if (consumeKey("Enter") || consumeKey("Space")) {
     player.lives = 3;
     score = 0;
-      gameState = GS.SELECT;
+    loadLevel(0);
   }
 }
 
