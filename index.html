@@ -14,7 +14,7 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; border: 2px s
 <canvas id="game"></canvas>
 <script>
 // ========================================
-// EGG CLIMBERS: THE ZOMBOCOM SAGA
+// EGG CLIMBERS: THE ZOMBOCOM SAGA v0.2
 // A Zombocom Production
 // Creative Directors: Matt & John
 // ========================================
@@ -254,6 +254,65 @@ const CHIP_PIXELS = [
   [0,0,BK,0,0,BK,0,0],
 ];
 
+// The Hot Dog Doctor (boss) - crappy doctor with hot dog, bigger sprite
+const HOTDOG_DOC_PIXELS = [
+  [0,0,WH,WH,WH,WH,0,0],
+  [0,WH,WH,WH,WH,WH,WH,0],
+  [0,WH,SK,SK,SK,SK,WH,0],
+  [0,SK,BK,SK,SK,BK,SK,0],
+  [0,SK,SK,RD,RD,SK,SK,0],
+  [0,SK,SK,SK,SK,SK,SK,0],
+  [WH,WH,WH,WH,WH,WH,WH,WH],
+  [WH,RD,WH,WH,WH,WH,RD,WH],
+  [0,WH,WH,WH,WH,WH,WH,0],
+  [0,SK,0,WH,WH,0,OR,0],
+  [0,0,0,WH,WH,0,YL,0],
+  [0,0,BK,0,0,BK,RD,0],
+  [0,0,BK,0,0,BK,0,0],
+];
+
+// Sweet Pasta (healing item)
+const PASTA_PIXELS = [
+  [0,0,YL,YL,YL,0,0],
+  [0,YL,YL,YL,YL,YL,0],
+  [YL,YL,OR,YL,OR,YL,YL],
+  [YL,OR,YL,OR,YL,OR,YL],
+  [0,YL,YL,YL,YL,YL,0],
+  [0,0,BR,BR,BR,0,0],
+];
+
+// Chili Dog Power-up
+const CHILIDOG_PIXELS = [
+  [0,0,OR,OR,OR,OR,0,0],
+  [0,OR,YL,YL,YL,YL,OR,0],
+  [OR,RD,RD,RD,RD,RD,RD,OR],
+  [OR,YL,BR,BR,BR,BR,YL,OR],
+  [0,OR,OR,OR,OR,OR,OR,0],
+  [0,0,GN,0,GN,0,0,0],
+];
+
+// Wrestling Cat Son
+const CATSON_PIXELS = [
+  [OR,0,0,0,0,OR,0],
+  [OR,OR,OR,OR,OR,OR,0],
+  [OR,GN,OR,OR,GN,OR,0],
+  [OR,OR,BK,OR,OR,OR,0],
+  [0,WH,WH,WH,WH,0,0],
+  [WH,WH,WH,WH,WH,WH,0],
+  [0,0,OR,0,OR,0,0],
+];
+
+// Gogo Dancer (Laura reference)
+const GOGO_PIXELS = [
+  [0,BR,BR,BR,BR,0],
+  [0,SK,SK,SK,SK,0],
+  [0,SK,BK,BK,SK,0],
+  [0,SK,SK,SK,SK,0],
+  [PK,PK,PK,PK,PK,PK],
+  [0,PK,PK,PK,PK,0],
+  [0,SK,0,0,SK,0],
+];
+
 // Mrs. Palmeri
 const PALMERI_PIXELS = [
   [0,BR,BR,BR,BR,BR,0],
@@ -345,6 +404,15 @@ const QUIPS = [
   "You just got Zombocom'd!",
   "That's impossible! ...wait, no it's not.",
   "50 raw eggs? Maybe next time.",
+  "We are complete beasts!",
+  "3x MVP, baby! Seattle Cups of Water!",
+  "Hopscotch MVP on the field!",
+  "That doctor ate my hot dog!",
+  "I LIKE MAKING MONEY! ...wait, wrong guy.",
+  "My 5 cat sons would love this!",
+  "Wrestling cat sons, ASSEMBLE!",
+  "Laura would be proud of that move!",
+  "Gogo dancers in the house!",
 ];
 
 let quipTimer = 0;
@@ -382,6 +450,7 @@ const LEVELS = [
     items: [
       { type: 'terminal', x: 130, y: 220 },
       { type: 'chilis', x: 490, y: 268 },
+      { type: 'pasta', x: 350, y: 158 },
     ],
     exit: { x: 670, y: 90 },
   },
@@ -417,6 +486,7 @@ const LEVELS = [
       { type: 'terminal', x: 510, y: 178 },
       { type: 'chilis', x: 100, y: 248 },
       { type: 'jetpack', x: 650, y: 130 },
+      { type: 'chilidog', x: 310, y: 218 },
     ],
     exit: { x: 460, y: 100 },
   },
@@ -448,6 +518,8 @@ const LEVELS = [
       { type: 'witch', x: 460, y: 200 },
       { type: 'doctor', x: 170, y: 150 },
       { type: 'lawyer', x: 590, y: 110 },
+      { type: 'catson', x: 630, y: 230 },
+      { type: 'gogo', x: 250, y: 230 },
     ],
     items: [
       { type: 'terminal', x: 55, y: 258 },
@@ -507,13 +579,40 @@ const LEVELS = [
       { type: 'raccoon', x: 510, y: 210 },
       { type: 'witch', x: 690, y: 180 },
       { type: 'doctor', x: 440, y: 100 },
+      { type: 'catson', x: 160, y: 120 },
+      { type: 'gogo', x: 500, y: 210 },
     ],
     items: [
       { type: 'terminal', x: 100, y: 228 },
       { type: 'chilis', x: 680, y: 178 },
       { type: 'jetpack', x: 200, y: 120 },
+      { type: 'pasta', x: 400, y: 100 },
     ],
     exit: { x: 440, y: 100 },
+  },
+  {
+    name: "The Hot Dog Doctor's Office",
+    subtitle: "BOSS: The Hot Dog Doctor — 'I like making money.'",
+    bg: '#1e1e0a',
+    ground: '#3a3a1a',
+    accent: '#fa4',
+    boss: 'hotdogdoc',
+    platforms: [
+      { x: 20, y: 500, w: 760, h: 20 },
+      { x: 50, y: 400, w: 120, h: 15 },
+      { x: 250, y: 370, w: 110, h: 15 },
+      { x: 450, y: 390, w: 120, h: 15 },
+      { x: 640, y: 360, w: 120, h: 15 },
+      { x: 140, y: 290, w: 130, h: 15 },
+      { x: 370, y: 260, w: 110, h: 15 },
+      { x: 560, y: 280, w: 110, h: 15 },
+    ],
+    enemies: [],
+    items: [
+      { type: 'pasta', x: 160, y: 248 },
+      { type: 'chilidog', x: 570, y: 238 },
+    ],
+    exit: null,
   },
   {
     name: "Chip's Gatorade Fortress",
@@ -551,7 +650,7 @@ let player = {
   x: 100, y: 400, vx: 0, vy: 0, w: 16, h: 24,
   hp: 100, maxHp: 100, grounded: false, facing: 1,
   attacking: false, attackTimer: 0, attackCooldown: 0,
-  invincible: 0, speedBoost: 0, jetpack: 0, dead: false,
+  invincible: 0, speedBoost: 0, jetpack: 0, chilidogPower: 0, dead: false,
   jumpHeld: false, animFrame: 0, lives: 3,
 };
 
@@ -563,7 +662,7 @@ function resetPlayer() {
   player.attacking = false; player.attackTimer = 0;
   player.attackCooldown = 0;
   player.invincible = 0; player.speedBoost = 0;
-  player.jetpack = 0; player.dead = false;
+  player.jetpack = 0; player.chilidogPower = 0; player.dead = false;
   player.animFrame = 0;
 }
 
@@ -589,6 +688,8 @@ function spawnEnemy(type, x, y) {
   if (type === 'witch') { e.hp = 4; e.shootTimer = 60 + Math.random() * 60; }
   if (type === 'doctor') { e.hp = 4; e.vx *= 1.5; e.stealCooldown = 0; }
   if (type === 'raccoon') { e.hp = 3; }
+  if (type === 'catson') { e.hp = 3; e.vx *= 1.3; }
+  if (type === 'gogo') { e.hp = 3; e.vx *= 0.6; e.shootTimer = 80 + Math.random() * 40; }
   enemies.push(e);
 }
 
@@ -598,6 +699,13 @@ function spawnBoss(type) {
       type: 'palmeri', phase: 'palmeri', x: 400, y: 340, w: 32, h: 32,
       hp: 30, maxHp: 30, vx: 1.5, vy: 0, grounded: false, facing: -1,
       hitTimer: 0, spawnTimer: 120, summonTimer: 200, active: true,
+    };
+  } else if (type === 'hotdogdoc') {
+    boss = {
+      type: 'hotdogdoc', x: 400, y: 300, w: 32, h: 40,
+      hp: 40, maxHp: 40, vx: 1.8, vy: 0, grounded: false, facing: -1,
+      hitTimer: 0, spawnTimer: 100, phase: 1, active: true,
+      quoteTimer: 120, throwTimer: 70,
     };
   } else if (type === 'chip') {
     boss = {
@@ -807,7 +915,7 @@ function drawTitle() {
   // Credits
   ctx.fillStyle = '#666';
   ctx.font = '11px monospace';
-  ctx.fillText('A ZOMBOCOM PRODUCTION — YOU CAN DO ANYTHING AT ZOMBOCOM', W/2, 530);
+  ctx.fillText('A ZOMBOCOM PRODUCTION v0.2 — YOU CAN DO ANYTHING AT ZOMBOCOM', W/2, 530);
   ctx.fillText('CREATIVE DIRECTORS: MATT (.moejontana) & JOHN (jkclancey7)', W/2, 548);
   ctx.fillStyle = '#555';
   ctx.fillText('ARROWS/WASD: MOVE | SPACE/UP/W: JUMP | Z/K: ATTACK | X/L: INTERACT', W/2, 575);
@@ -929,12 +1037,13 @@ function drawSelect() {
   ctx.fillStyle = '#AAA';
   ctx.fillText('Weapon: Katana', mattX, 255);
   ctx.fillText('Speed: ★★★★★', mattX, 275);
-  ctx.fillText('Power: ★★★☆☆', mattX, 295);
+  ctx.fillText('Range: ★★☆☆☆', mattX, 295);
+  ctx.fillText('Power: ★★★☆☆', mattX, 315);
   ctx.fillStyle = '#888';
   ctx.font = '11px monospace';
-  ctx.fillText('3x MVP Hopscotch', mattX, 320);
-  ctx.fillText('Seattle Cups of Water', mattX, 336);
-  ctx.fillText('"Fast & sleek"', mattX, 360);
+  ctx.fillText('3x MVP Hopscotch', mattX, 340);
+  ctx.fillText('Seattle Cups of Water', mattX, 356);
+  ctx.fillText('"Fast & sleek"', mattX, 376);
 
   // John panel
   const johnX = 3*W/4;
@@ -953,13 +1062,14 @@ function drawSelect() {
   ctx.font = '13px monospace';
   ctx.fillStyle = '#AAA';
   ctx.fillText('Weapon: Claymore', johnX, 255);
-  ctx.fillText('Speed: ★★★☆☆', johnX, 275);
-  ctx.fillText('Power: ★★★★★', johnX, 295);
+  ctx.fillText('Speed: ★★☆☆☆', johnX, 275);
+  ctx.fillText('Range: ★★★★★', johnX, 295);
+  ctx.fillText('Power: ★★★★★', johnX, 315);
   ctx.fillStyle = '#888';
   ctx.font = '11px monospace';
-  ctx.fillText('Zombocom Philosopher', johnX, 320);
-  ctx.fillText('Dumpster Champion', johnX, 336);
-  ctx.fillText('"The Highlander"', johnX, 360);
+  ctx.fillText('Zombocom Philosopher', johnX, 340);
+  ctx.fillText('Dumpster Champion', johnX, 356);
+  ctx.fillText('"The Highlander"', johnX, 376);
 
   // Danny DeVito in center
   drawPixelArt(W/2 - 12, 430, DEVITO_PIXELS, 4);
@@ -1044,7 +1154,7 @@ function updateGame() {
   }
 
   // Player movement
-  const baseSpeed = selectedChar === 'matt' ? 3.5 : 2.8;
+  const baseSpeed = selectedChar === 'matt' ? 3.8 : 2.5;
   const speedMul = player.speedBoost > 0 ? 1.5 : 1;
 
   if (keys['ArrowLeft'] || keys['KeyA']) {
@@ -1088,8 +1198,8 @@ function updateGame() {
   // Attack
   if ((keys['KeyZ'] || keys['KeyK']) && player.attackCooldown <= 0) {
     player.attacking = true;
-    player.attackTimer = selectedChar === 'matt' ? 12 : 18;
-    player.attackCooldown = selectedChar === 'matt' ? 18 : 30;
+    player.attackTimer = selectedChar === 'matt' ? 10 : 22;
+    player.attackCooldown = selectedChar === 'matt' ? 14 : 34;
     sfxAttack();
   }
 
@@ -1100,6 +1210,7 @@ function updateGame() {
   // Buff timers
   if (player.invincible > 0) player.invincible--;
   if (player.speedBoost > 0) player.speedBoost--;
+  if (player.chilidogPower > 0) player.chilidogPower--;
 
   // Combo timer
   if (comboTimer > 0) comboTimer--;
@@ -1108,8 +1219,9 @@ function updateGame() {
   resolvePhysics(player);
 
   // Attack hitbox
-  if (player.attacking && player.attackTimer > (selectedChar === 'matt' ? 6 : 10)) {
-    const atkRange = selectedChar === 'matt' ? 28 : 42;
+  const swordScale = player.chilidogPower > 0 ? 1.6 : 1;
+  if (player.attacking && player.attackTimer > (selectedChar === 'matt' ? 5 : 13)) {
+    const atkRange = (selectedChar === 'matt' ? 22 : 50) * swordScale;
     const atkBox = {
       x: player.facing > 0 ? player.x + player.w : player.x - atkRange,
       y: player.y + 2,
@@ -1181,6 +1293,44 @@ function updateGame() {
     }
     e.facing = e.vx > 0 ? 1 : -1;
 
+    // Egg jumping AI: eggs chase the player and jump to reach platforms
+    if (e.type === 'egg' && e.grounded) {
+      const dx = player.x - e.x;
+      const dy = player.y - e.y;
+      // Chase player when within range
+      if (Math.abs(dx) < 250) {
+        e.vx = dx > 0 ? 1.2 : -1.2;
+      }
+      // Jump if player is above or at edge of platform
+      if (dy < -30 && Math.abs(dx) < 200) {
+        e.vy = -9;
+        e.grounded = false;
+      }
+      // Random jumps to stay active on platforms
+      if (Math.random() < 0.008) {
+        e.vy = -8;
+        e.grounded = false;
+      }
+      // Jump at patrol edges to reach adjacent platforms
+      if ((e.x <= e.patrolMin + 5 || e.x >= e.patrolMax - 5) && Math.random() < 0.15) {
+        e.vy = -9;
+        e.grounded = false;
+      }
+    }
+
+    // Raccoon chasing: raccoons also track player somewhat
+    if (e.type === 'raccoon' && e.grounded) {
+      const dx = player.x - e.x;
+      if (Math.abs(dx) < 180) {
+        e.vx = dx > 0 ? 2.2 : -2.2;
+        // Raccoons can jump too
+        if (player.y < e.y - 25 && Math.abs(dx) < 140 && Math.random() < 0.02) {
+          e.vy = -8;
+          e.grounded = false;
+        }
+      }
+    }
+
     // Witch shooting
     if (e.type === 'witch' && e.shootTimer !== undefined) {
       e.shootTimer--;
@@ -1197,6 +1347,25 @@ function updateGame() {
           spawnParticles(e.x + e.w/2, e.y + e.h/2, '#F0F', 3);
         }
         e.shootTimer = 80 + Math.random() * 60;
+      }
+    }
+
+    // Gogo dancer: dances and throws sparkles like a witch
+    if (e.type === 'gogo' && e.shootTimer !== undefined) {
+      e.shootTimer--;
+      if (e.shootTimer <= 0) {
+        const dx = player.x - e.x;
+        const dy = player.y - e.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 250 && dist > 10) {
+          projectiles.push({
+            x: e.x + e.w/2, y: e.y + e.h/2,
+            vx: (dx/dist) * 2.5, vy: (dy/dist) * 2.5,
+            life: 90, color: '#F9F', size: 3, type: 'magic',
+          });
+          spawnParticles(e.x + e.w/2, e.y + e.h/2, '#F9F', 2);
+        }
+        e.shootTimer = 90 + Math.random() * 50;
       }
     }
 
@@ -1331,6 +1500,23 @@ function updateGame() {
       spawnParticles(item.x + item.w/2, item.y, '#0FF', 15);
       maybeQuip("Is that a Presidente Margarita?");
       score += 75;
+    } else if (item.type === 'pasta') {
+      item.collected = true;
+      const heal = 35;
+      player.hp = Math.min(player.maxHp, player.hp + heal);
+      sfxHeal();
+      addFloatingText(item.x, item.y - 5, `SWEET PASTA +${heal} HP!`, '#FF0');
+      spawnParticles(item.x + item.w/2, item.y, '#FF0', 8);
+      score += 30;
+    } else if (item.type === 'chilidog') {
+      item.collected = true;
+      player.chilidogPower = 480;
+      sfxPickup();
+      addFloatingText(item.x, item.y - 5, "CHILI'S CHILI DOG!", '#F80');
+      addFloatingText(item.x, item.y - 20, 'SWORD GROWS BIGGER!', '#FF0');
+      spawnParticles(item.x + item.w/2, item.y, '#F80', 12);
+      maybeQuip("We are complete beasts!");
+      score += 50;
     }
   }
 
@@ -1412,6 +1598,91 @@ function updateBoss() {
       spawnEnemy('egg', boss.x + (Math.random() - 0.5) * 60, boss.y - 30);
       boss.spawnTimer = boss.phase === 'marge' ? 60 + Math.random() * 40 : 100 + Math.random() * 60;
       addFloatingText(boss.x, boss.y - 20, 'BAWK!', '#FF0');
+    }
+
+    // Contact damage
+    if (player.invincible <= 0 && !player.dead && aabb(player, boss)) {
+      player.hp -= 15;
+      player.invincible = 60;
+      player.vy = -6;
+      player.vx = (player.x < boss.x ? -5 : 5);
+      sfxHit();
+      shakeTimer = 8;
+      shakeIntensity = 5;
+      if (player.hp <= 0) { player.dead = true; deathTimer = 0; sfxDeath(); }
+    }
+  }
+
+  if (boss.type === 'hotdogdoc') {
+    boss.x += boss.vx;
+    if (boss.x < 60 || boss.x > 680) boss.vx *= -1;
+    boss.facing = boss.vx > 0 ? 1 : -1;
+    resolvePhysics(boss);
+
+    // Phase 2 at half health - gets angry, faster
+    if (boss.hp < boss.maxHp / 2 && boss.phase === 1) {
+      boss.phase = 2;
+      boss.vx *= 1.6;
+      addFloatingText(boss.x, boss.y - 20, 'I LIKE MAKING MONEY!!!', '#F00');
+      shakeTimer = 15;
+      shakeIntensity = 5;
+      spawnParticles(boss.x + boss.w/2, boss.y, '#F90', 20);
+    }
+
+    // Quips
+    if (boss.quoteTimer !== undefined) {
+      boss.quoteTimer--;
+      if (boss.quoteTimer <= 0) {
+        const docQuips = [
+          'I LIKE MAKING MONEY.',
+          'THAT WAS MY HOT DOG!',
+          'THE EGG PEOPLE PAY WELL!',
+          'RACCOONS ARE MY FRIENDS!',
+          'YOUR INSURANCE WON\'T COVER THIS!',
+          'I ATE YOUR HOT DOG AND I\'D DO IT AGAIN!',
+        ];
+        addFloatingText(boss.x, boss.y - 20, docQuips[Math.floor(Math.random() * docQuips.length)], '#FA0');
+        boss.quoteTimer = 150 + Math.random() * 100;
+      }
+    }
+
+    // Throw hot dog projectiles
+    boss.throwTimer--;
+    if (boss.throwTimer <= 0) {
+      const dx = player.x - boss.x;
+      const dy = player.y - boss.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist > 10) {
+        projectiles.push({
+          x: boss.x + boss.w/2, y: boss.y + boss.h/2,
+          vx: (dx/dist) * 3.5, vy: (dy/dist) * 3.5,
+          life: 110, color: '#FA0', size: 5, type: 'hotdog',
+        });
+        if (boss.phase === 2) {
+          // Spread shot in phase 2
+          const angle = Math.atan2(dy, dx);
+          projectiles.push({
+            x: boss.x + boss.w/2, y: boss.y + boss.h/2,
+            vx: Math.cos(angle + 0.4) * 3.5, vy: Math.sin(angle + 0.4) * 3.5,
+            life: 110, color: '#FA0', size: 4, type: 'hotdog',
+          });
+          projectiles.push({
+            x: boss.x + boss.w/2, y: boss.y + boss.h/2,
+            vx: Math.cos(angle - 0.4) * 3.5, vy: Math.sin(angle - 0.4) * 3.5,
+            life: 110, color: '#FA0', size: 4, type: 'hotdog',
+          });
+        }
+      }
+      boss.throwTimer = boss.phase === 2 ? 40 : 60;
+    }
+
+    // Spawn egg & raccoon allies
+    boss.spawnTimer--;
+    if (boss.spawnTimer <= 0) {
+      const allyType = Math.random() > 0.5 ? 'egg' : 'raccoon';
+      spawnEnemy(allyType, boss.x + (Math.random() - 0.5) * 80, boss.y - 30);
+      boss.spawnTimer = boss.phase === 2 ? 70 + Math.random() * 40 : 110 + Math.random() * 50;
+      addFloatingText(boss.x, boss.y - 15, allyType === 'egg' ? 'Get them!' : 'Raccoons, attack!', '#FA0');
     }
 
     // Contact damage
@@ -1756,6 +2027,23 @@ function drawGame() {
       ctx.beginPath();
       ctx.arc(item.x + 10, iy + 8, 12, 0, Math.PI * 2);
       ctx.fill();
+    } else if (item.type === 'pasta') {
+      drawPixelArt(item.x, iy, PASTA_PIXELS, 2);
+      ctx.fillStyle = '#FF0';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('PASTA', item.x + 7, iy - 3);
+    } else if (item.type === 'chilidog') {
+      drawPixelArt(item.x, iy, CHILIDOG_PIXELS, 2);
+      // Glow
+      ctx.fillStyle = `rgba(255,140,0,${0.12 + Math.sin(gameTime * 0.08) * 0.06})`;
+      ctx.beginPath();
+      ctx.arc(item.x + 8, iy + 6, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#F80';
+      ctx.font = 'bold 8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('CHILI DOG', item.x + 8, iy - 4);
     }
   }
 
@@ -1773,6 +2061,8 @@ function drawGame() {
       case 'lawyer': sprite = LAWYER_PIXELS; break;
       case 'witch': sprite = WITCH_PIXELS; break;
       case 'doctor': sprite = DOCTOR_PIXELS; break;
+      case 'catson': sprite = CATSON_PIXELS; break;
+      case 'gogo': sprite = GOGO_PIXELS; break;
       default: sprite = EGG_PIXELS;
     }
     if (e.facing < 0) {
@@ -1785,8 +2075,9 @@ function drawGame() {
       drawPixelArt(e.x, e.y, sprite, 2);
     }
     // Enemy HP pips (only if damaged)
-    if (e.hp < (e.type === 'lawyer' ? 5 : e.type === 'witch' || e.type === 'doctor' ? 4 : 3)) {
-      const maxHp = e.type === 'lawyer' ? 5 : e.type === 'witch' || e.type === 'doctor' ? 4 : 3;
+    const enemyMaxHp = e.type === 'lawyer' ? 5 : (e.type === 'witch' || e.type === 'doctor') ? 4 : 3;
+    if (e.hp < enemyMaxHp) {
+      const maxHp = enemyMaxHp;
       for (let i = 0; i < maxHp; i++) {
         ctx.fillStyle = i < e.hp ? '#0F0' : '#500';
         ctx.fillRect(e.x + i * 4, e.y - 5, 3, 3);
@@ -1804,6 +2095,9 @@ function drawGame() {
       drawPixelArt(boss.x - 8, boss.y - 30, PALMERI_PIXELS, 2.5);
       bossSprite = CHICKEN_PIXELS;
       bossScale = boss.phase === 'marge' ? 5 : 4;
+    } else if (boss.type === 'hotdogdoc') {
+      bossSprite = HOTDOG_DOC_PIXELS;
+      bossScale = boss.phase === 2 ? 4.5 : 4;
     } else {
       bossSprite = CHIP_PIXELS;
       bossScale = 4;
@@ -1837,6 +2131,8 @@ function drawGame() {
     ctx.textAlign = 'center';
     const bossName = boss.type === 'palmeri'
       ? (boss.phase === 'marge' ? 'LARGE MARGE - ENRAGED!' : 'MRS. PALMERI & LARGE MARGE')
+      : boss.type === 'hotdogdoc'
+      ? (boss.phase === 2 ? 'THE HOT DOG DOCTOR - ENRAGED!' : 'THE HOT DOG DOCTOR')
       : (boss.phase === 2 ? 'CHIP - MAXIMUM HYDRATION!' : 'CHIP FROM GATORADE');
     ctx.fillText(bossName, W/2, 26);
   }
@@ -1881,15 +2177,17 @@ function drawGame() {
     }
 
     // Sword swing arc
-    if (isAttacking && player.attackTimer > (selectedChar === 'matt' ? 6 : 10)) {
-      const atkX = player.facing > 0 ? player.x + player.w + 2 : player.x - (selectedChar === 'matt' ? 22 : 32);
-      const swingProgress = player.attackTimer / (selectedChar === 'matt' ? 12 : 18);
+    const swordScale = player.chilidogPower > 0 ? 1.6 : 1;
+    if (isAttacking && player.attackTimer > (selectedChar === 'matt' ? 5 : 13)) {
+      const atkX = player.facing > 0 ? player.x + player.w + 2 : player.x - (selectedChar === 'matt' ? 18 : 40);
+      const swingProgress = player.attackTimer / (selectedChar === 'matt' ? 10 : 22);
       ctx.strokeStyle = `rgba(200, 200, 255, ${swingProgress})`;
       ctx.lineWidth = 2;
       const arcStart = player.facing > 0 ? -Math.PI/3 : Math.PI + Math.PI/3;
       const arcEnd = player.facing > 0 ? Math.PI/3 : Math.PI - Math.PI/3;
       ctx.beginPath();
-      ctx.arc(player.x + player.w/2, player.y + player.h/2, selectedChar === 'matt' ? 20 : 30, arcStart, arcEnd);
+      const swingRadius = (selectedChar === 'matt' ? 16 : 36) * swordScale;
+      ctx.arc(player.x + player.w/2, player.y + player.h/2, swingRadius, arcStart, arcEnd);
       ctx.stroke();
     }
 
@@ -1919,6 +2217,15 @@ function drawGame() {
         ctx.lineTo(lx - player.facing * 8, player.y + 4 + i * 7);
         ctx.stroke();
       }
+    }
+
+    // Chili dog sword glow
+    if (player.chilidogPower > 0) {
+      ctx.fillStyle = `rgba(255, 100, 0, ${0.15 + Math.sin(gameTime * 0.12) * 0.08})`;
+      ctx.beginPath();
+      const glowX = player.facing > 0 ? player.x + player.w + 8 : player.x - 8;
+      ctx.arc(glowX, player.y + player.h/2, 14 * swordScale, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // Invincibility shield
@@ -2061,6 +2368,9 @@ function drawHUD() {
   if (player.jetpack > 0) {
     ctx.fillStyle = '#F90'; ctx.fillText(`JETPACK ${Math.ceil(player.jetpack/60)}s`, 10, buffY); buffY += 13;
   }
+  if (player.chilidogPower > 0) {
+    ctx.fillStyle = '#F80'; ctx.fillText(`BIG SWORD ${Math.ceil(player.chilidogPower/60)}s`, 10, buffY); buffY += 13;
+  }
 
   // Enemies remaining (non-boss levels)
   const remaining = enemies.filter(e => e.hp > 0).length;
@@ -2131,6 +2441,10 @@ function drawGameOver() {
     ctx.fillText('PRESS ENTER TO TRY AGAIN', W/2, H/2 + 140);
   }
 
+}
+
+function updateGameOver() {
+  gameTime++;
   if (consumeKey('Enter') || consumeKey('Space')) {
     score = 0;
     player.lives = 3;
@@ -2143,7 +2457,6 @@ function drawGameOver() {
 // ========================================
 let winTimer = 0;
 function drawWin() {
-  winTimer++;
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, W, H);
 
@@ -2222,6 +2535,10 @@ function drawWin() {
     ctx.fillText('PRESS ENTER TO PLAY AGAIN', W/2, 560);
   }
 
+}
+
+function updateWin() {
+  winTimer++;
   if (winTimer > 60 && (consumeKey('Enter') || consumeKey('Space'))) {
     score = 0;
     winTimer = 0;
@@ -2241,6 +2558,8 @@ function update() {
     case GS.PLAYING:
     case GS.BOSS: updateGame(); break;
     case GS.BONUS: updateBonus(); break;
+    case GS.GAMEOVER: updateGameOver(); break;
+    case GS.WIN: updateWin(); break;
   }
   // Clear justPressed at end of frame
   for (const k in justPressed) justPressed[k] = false;
