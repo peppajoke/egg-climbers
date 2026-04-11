@@ -856,7 +856,7 @@ function sfxSteal() { beep(300, 0.1, 0.1, 'sawtooth'); setTimeout(() => beep(200
 // ========================================
 function updateTitle() {
   titleBlink += 0.05;
-  if (consumeKey('Enter') || consumeKey('Space')) {
+  if (consumeKey("Enter") || consumeKey("Space")) {
     initAudio();
     gameState = GS.INTRO;
     introScroll = 0;
@@ -966,9 +966,10 @@ const INTRO_TEXT = [
 ];
 
 function updateIntro() {
-  introScroll += 0.6;
-  if (consumeKey('Enter') || consumeKey('Space')) {
+  introScroll += 0.3;
+  if (consumeKey("Enter") || consumeKey("Space")) {
     if (introScroll > 30) {
+
       gameState = GS.SELECT;
     }
   }
@@ -1003,10 +1004,10 @@ function drawIntro() {
 function updateSelect() {
   if (keys['ArrowLeft'] || keys['KeyA']) { selectedChar = 'matt'; }
   if (keys['ArrowRight'] || keys['KeyD']) { selectedChar = 'john'; }
-  if (consumeKey('Enter') || consumeKey('Space')) {
+  if (consumeKey("Enter") || consumeKey("Space")) {
     player.lives = 3;
     score = 0;
-    loadLevel(0);
+      gameState = GS.SELECT;
   }
 }
 
@@ -2445,10 +2446,11 @@ function drawGameOver() {
 
 function updateGameOver() {
   gameTime++;
-  if (consumeKey('Enter') || consumeKey('Space')) {
+  if (consumeKey("Enter") || consumeKey("Space")) {
     score = 0;
     player.lives = 3;
-    gameState = GS.SELECT;
+
+      gameState = GS.SELECT;
   }
 }
 
