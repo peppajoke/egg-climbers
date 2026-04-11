@@ -1,13 +1,1 @@
-{
-  "name": "egg-climbers",
-  "version": "1.0.0",
-  "description": "Egg Climbers: The Zombocom Saga",
-  "main": "server.js",
-  "engines": { "node": ">=18" },
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  }
-}
+{"name":"egg-climbers-static","version":"1.0.0","scripts":{"start":"echo \"Static site\" && exit 0"}}
