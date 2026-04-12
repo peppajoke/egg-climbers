@@ -83,7 +83,7 @@ const CY = '#0FF';
 // SPRITES
 // ========================================
 
-// Matt: shorter hair, short beard, katana, blue "MATT" shirt
+// Matt: shorter hair, short beard, katana, blue "M" shirt
 const MATT_STAND = [
   [0,0,H1,H1,H1,0,0,0],
   [0,H1,H1,H1,H1,H1,0,0],
@@ -951,10 +951,10 @@ function drawSelect() {
   ctx.fillStyle = BU;
   ctx.font = 'bold 12px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('MATT', mattX, 130 + 7*4 + 9);
-  ctx.fillText('MATT', mattX + 1, 130 + 7*4 + 9);
+  ctx.fillText('M', mattX, 130 + 7*4 + 9);
+  ctx.fillText('M', mattX + 1, 130 + 7*4 + 9);
   ctx.fillStyle = '#FFF';
-  ctx.fillText('MATT', mattX + 0.5, 130 + 7*4 + 8);
+  ctx.fillText('M', mattX + 0.5, 130 + 7*4 + 8);
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 22px monospace';
   ctx.fillText('MATT', mattX, 230);
@@ -988,10 +988,10 @@ function drawSelect() {
   ctx.fillStyle = RD;
   ctx.font = 'bold 12px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('JOHN', johnX, 130 + 7*4 + 9);
-  ctx.fillText('JOHN', johnX + 1, 130 + 7*4 + 9);
+  ctx.fillText('J', johnX, 130 + 7*4 + 9);
+  ctx.fillText('J', johnX + 1, 130 + 7*4 + 9);
   ctx.fillStyle = '#FFF';
-  ctx.fillText('JOHN', johnX + 0.5, 130 + 7*4 + 8);
+  ctx.fillText('J', johnX + 0.5, 130 + 7*4 + 8);
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 22px monospace';
   ctx.fillText('JOHN', johnX, 230);
@@ -1363,6 +1363,15 @@ function updateGame() {
         deathTimer = 0;
         sfxDeath();
       }
+    }
+  }
+
+  // Enemy fall death: enemies that fall off the bottom of the screen die and award points
+  for (const e of enemies) {
+    if (e.hp > 0 && e.y > canvas.height + 50) {
+      e.hp = 0;
+      score += 50;
+      addFloatingText(e.x, canvas.height - 10, '+50 FELL!', '#F90');
     }
   }
 
@@ -2082,7 +2091,7 @@ function drawGame() {
     }
 
     // T-shirt name label (screen-printed style)
-    const shirtName = selectedChar === 'matt' ? 'MATT' : 'JOHN';
+    const shirtName = selectedChar === 'matt' ? 'M' : 'J';
     const shirtColor = selectedChar === 'matt' ? BU : RD;
     ctx.font = 'bold 7px monospace';
     const tw = ctx.measureText(shirtName).width;
