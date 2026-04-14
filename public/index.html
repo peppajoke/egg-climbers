@@ -356,6 +356,10 @@ const QUIPS = [
   "Chili's heals all wounds!",
   "Large Marge ain't got nothin' on us!",
   "Mrs. Palmeri's chicken farm is OVER!",
+  "HIGHLANDER HACK!",
+  "There can be only one!",
+  "Get HACKED, egg!",
+  "The Highlander sends his regards!",
 ];
 
 let quipTimer = 0;
@@ -575,7 +579,7 @@ function resetPlayer() {
   player.attackCooldown = 0;
   player.invincible = 0; player.speedBoost = 0;
   player.jetpack = 0; player.dead = false;
-  player.animFrame = 0; player.hopscotchCooldown = 0;
+  player.animFrame = 0; player.hopscotchCooldown = 0; player.highlanderCooldown = 0;
   player.jumpHeld = true; // prevent immediate jump if Space held from menu
 }
 
@@ -847,6 +851,7 @@ const INTRO_TEXT = [
   "",
   "John, Zombocom philosopher,",
   "the one true Dumpster Champion.",
+  "His HIGHLANDER HACK sends foes flying.",
   "",
   "In a small dojo in the mountains,",
   "DANNY DEVITO taught them the ancient",
@@ -1000,11 +1005,15 @@ function drawSelect() {
   ctx.fillText('Weapon: Claymore', johnX, 255);
   ctx.fillText('Speed: ★★★☆☆', johnX, 275);
   ctx.fillText('Power: ★★★★★', johnX, 295);
-  ctx.fillStyle = '#888';
-  ctx.font = '11px monospace';
+  ctx.fillStyle = '#F80';
+  ctx.font = 'bold 11px monospace';
   ctx.fillText('Zombocom Philosopher', johnX, 320);
   ctx.fillText('Dumpster Champion', johnX, 336);
-  ctx.fillText('"The Highlander"', johnX, 360);
+  ctx.fillStyle = '#FF0';
+  ctx.fillText('Special: HIGHLANDER HACK', johnX, 356);
+  ctx.fillStyle = '#888';
+  ctx.font = '9px monospace';
+  ctx.fillText('(↓+ATK on ground = knockback!)', johnX, 370);
 
   // Danny DeVito in center
   drawPixelArt(W/2 - 12, 430, DEVITO_PIXELS, 4);
@@ -1194,6 +1203,44 @@ function updateGame() {
       boss.hitTimer = 10;
       sfxBossHit();
       addFloatingText(boss.x, boss.y, 'HOPSCOTCH HIT!', '#0FF');
+    }
+  }
+
+  // John's Highlander Hack: down+attack while grounded
+  if (player.highlanderCooldown > 0) player.highlanderCooldown--;
+  if (selectedChar === 'john' && player.grounded && (keys['ArrowDown'] || keys['KeyS']) && (keys['KeyZ'] || keys['KeyK']) && player.highlanderCooldown <= 0) {
+    player.highlanderCooldown = 50;
+    player.attacking = true;
+    player.attackTimer = 18;
+    player.attackCooldown = 30;
+    maybeQuip("HIGHLANDER HACK!");
+    shakeTimer = 6;
+    shakeIntensity = 3;
+    sfxHit();
+    spawnParticles(player.x + player.w/2 + player.facing * 20, player.y + player.h/2, '#F80', 10);
+    addFloatingText(player.x, player.y - 10, 'HIGHLANDER!', '#F80');
+    const hackRange = 70;
+    const hackBox = {
+      x: player.facing > 0 ? player.x + player.w : player.x - hackRange,
+      y: player.y - 4,
+      w: hackRange,
+      h: player.h + 8,
+    };
+    for (const e of enemies) {
+      if (e.hp > 0 && e.hitTimer <= 0 && aabb(hackBox, e)) {
+        e.hp -= 3;
+        e.vx = player.facing * 10;
+        e.vy = -5;
+        e.hitTimer = 15;
+        spawnParticles(e.x + e.w/2, e.y + e.h/2, '#F80', 6);
+        if (e.hp <= 0) { score += 150; addFloatingText(e.x, e.y, '+150 HACKED!', '#F80'); }
+      }
+    }
+    if (boss && boss.active && boss.hitTimer <= 0 && aabb(hackBox, boss)) {
+      boss.hp -= 3;
+      boss.hitTimer = 10;
+      sfxBossHit();
+      addFloatingText(boss.x, boss.y, 'HIGHLANDER HIT!', '#F80');
     }
   }
 
@@ -2311,7 +2358,7 @@ function drawHUD() {
   // Controls
   ctx.fillStyle = '#333';
   ctx.font = '9px monospace';
-  ctx.fillText('MOVE: Arrows/WASD | JUMP: Space/Up | ATK: Z/K | USE: X/L | Matt: ↓+ATK=Hopscotch', W/2, H - 3);
+  ctx.fillText('MOVE: Arrows/WASD | JUMP: Space/Up | ATK: Z/K | USE: X/L | Matt: ↓+ATK(air)=Hopscotch | John: ↓+ATK(ground)=Highlander', W/2, H - 3);
 }
 
 // ========================================
